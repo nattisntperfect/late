@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telat hehe</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- Basic Setup & Color Palette --- */
+        :root {
+            --bg-color: #fde2e4; /* Soft pink */
+            --text-color: #333;
+            --cat-color: #a2d2ff; /* Soft blue */
+            --cat-hover-color: #bde0fe; /* Lighter blue */
+            --heart-color: #ffc8dd; /* Pastel pink */
+            --blush-color: #ffafcc; /* Deeper pink for blush */
+            --button-bg: #cdb4db; /* Lavender */
+            --button-text: #fff;
+            --font-heading: 'Dancing Script', cursive;
+            --font-body: 'Poppins', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: var(--font-body);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden; /* Hide overflow to prevent scrollbars from animations */
+        }
+
+        /* --- Main Container --- */
+        .container {
+            text-align: center;
+            padding: 20px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(5px);
+            max-width: 600px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* --- Text Styling --- */
+        h1 {
+            font-family: var(--font-heading);
+            font-size: 3rem;
+            margin: 0;
+            color: #a180b3;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            margin-top: 5px;
+        }
+
+        .main-wish {
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* --- Cats Section --- */
+        .cats-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 10px;
+            position: relative;
+            margin-bottom: 30px;
+            animation: cuddle 5s infinite ease-in-out;
+        }
+
+        .cat {
+            width: 100px;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .cat:hover {
+            transform: scale(1.1);
+        }
+
+        /* Cat SVG Styling */
+        .cat-svg {
+            width: 100%;
+            height: auto;
+        }
+        .cat-body path { fill: var(--cat-color); stroke: var(--text-color); stroke-width: 2; transition: fill 0.3s ease; }
+        .cat:hover .cat-body path { fill: var(--cat-hover-color); }
+        .eye, .mouth { stroke: var(--text-color); stroke-width: 2; stroke-linecap: round; }
+        .cheek { fill: transparent; transition: fill 0.3s ease; }
+        .cat:hover .cheek { fill: var(--blush-color); } /* Blushing on hover */
+
+        /* Blinking Animation */
+        .blinking .eye {
+            animation: blink 0.3s ease-out;
+        }
+        @keyframes blink {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(0.1); }
+        }
+
+        /* Cuddle Animation */
+        @keyframes cuddle {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+        }
+
+        /* --- Interactive Effects --- */
+        .meow-bubble {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            background-color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            opacity: 0;
+            transform: scale(0);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .cat:hover .meow-bubble {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .cute-message-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--button-bg);
+            color: var(--button-text);
+            padding: 20px 30px;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none; /* Make it unclickable */
+            transition: opacity 0.4s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .cute-message-popup.show {
+            opacity: 1;
+        }
+
+        /* --- Button and Final Message --- */
+        #loveButton {
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            padding: 12px 25px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        #loveButton:hover {
+            background-color: #b39bc8;
+            transform: scale(1.05);
+        }
+
+        #finalMessage {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #a180b3;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        #finalMessage.show {
+            opacity: 1;
+        }
+
+        /* --- Floating Hearts Animation --- */
+        .hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .heart {
+            position: absolute;
+            background-color: var(--heart-color);
+            width: 20px;
+            height: 20px;
+            opacity: 0;
+            animation: floatUp 5s infinite linear;
+        }
+        .heart::before, .heart::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: var(--heart-color);
+            border-radius: 50%;
+        }
+        .heart::before { top: -10px; left: 0; }
+        .heart::after { top: 0; left: -10px; }
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-10vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* --- Responsive Design for Mobile --- */
+        @media (max-width: 640px) {
+            h1 { font-size: 2.5rem; }
+            .subtitle { font-size: 1rem; }
+            .main-wish { font-size: 1.1rem; }
+            .cat { width: 80px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="hearts"></div>
+
+        <div class="message-container">
+            <h1>Sorry I’m late…</h1>
+            <p class="subtitle">but my love for you is never late.</p>
+            <p class="main-wish">Happy (Late) Girlfriend Day, my love.</p>
+        </div>
+
+        <div class="cats-container">
+            <div class="cat" id="cat1">
+                <div class="meow-bubble">meow~</div>
+                <svg viewBox="0 0 100 100" class="cat-svg">
+                    <g class="cat-body">
+                        <path d="M 20,50 C 20,20 80,20 80,50 C 100,80 70,100 50,95 C 30,100 0,80 20,50 Z" />
+                        <path d="M 20,30 Q 10,10 30,20 Z" />
+                        <path d="M 80,30 Q 90,10 70,20 Z" />
+                        <circle class="cheek left" cx="35" cy="65" r="5" />
+                        <circle class="cheek right" cx="65" cy="65" r="5" />
+                    </g>
+                    <g class="eyes">
+                        <line x1="38" y1="50" x2="48" y2="50" class="eye" />
+                        <line x1="62" y1="50" x2="52" y2="50" class="eye" />
+                    </g>
+                    <path d="M 45,75 Q 50,80 55,75" class="mouth" />
+                </svg>
+            </div>
+            <div class="cat" id="cat2">
+                <div class="meow-bubble">purrrr...</div>
+                 <svg viewBox="0 0 100 100" class="cat-svg">
+                    <g class="cat-body">
+                        <path d="M 20,50 C 20,20 80,20 80,50 C 100,80 70,100 50,95 C 30,100 0,80 20,50 Z" />
+                        <path d="M 20,30 Q 10,10 30,20 Z" />
+                        <path d="M 80,30 Q 90,10 70,20 Z" />
+                        <circle class="cheek left" cx="35" cy="65" r="5" />
+                        <circle class="cheek right" cx="65" cy="65" r="5" />
+                    </g>
+                    <g class="eyes">
+                        <line x1="38" y1="50" x2="48" y2="50" class="eye" />
+                        <line x1="62" y1="50" x2="52" y2="50" class="eye" />
+                    </g>
+                    <path d="M 45,75 Q 50,80 55,75" class="mouth" />
+                </svg>
+            </div>
+        </div>
+
+        <button id="loveButton">Pencet y ❤</button>
+
+        <div id="cuteMessage" class="cute-message-popup"></div>
+
+        <p id="finalMessage"></p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const cats = document.querySelectorAll('.cat');
+            const cuteMessagePopup = document.getElementById('cuteMessage');
+            const loveButton = document.getElementById('loveButton');
+            const finalMessage = document.getElementById('finalMessage');
+            const heartsContainer = document.querySelector('.hearts');
+
+            // Array of cute messages
+            const cuteMessages = [
+                "You're my purr-fect person!",
+                "I'm not kitten, I love you!",
+                "You're the cat's meow.",
+                "I love you more than catnip!",
+                "Life with you is paws-itively amazing.",
+                "You had me at meow.",
+                "Thanks for being my human. ❤️"
+            ];
+
+            // Show a random cute message on cat click
+            cats.forEach(cat => {
+                cat.addEventListener('click', () => {
+                    const randomIndex = Math.floor(Math.random() * cuteMessages.length);
+                    cuteMessagePopup.textContent = cuteMessages[randomIndex];
+                    
+                    // Show the popup and then hide it
+                    cuteMessagePopup.classList.add('show');
+                    setTimeout(() => {
+                        cuteMessagePopup.classList.remove('show');
+                    }, 2500); // Message stays for 2.5 seconds
+                });
+            });
+
+            // Love button click event for confetti and final message
+            loveButton.addEventListener('click', () => {
+                // Trigger confetti
+                confetti({
+                    particleCount: 150,
+                    spread: 90,
+                    origin: { y: 0.6 }
+                });
+
+                // Show the final message
+                finalMessage.textContent = "I love you, every single day.";
+                finalMessage.classList.add('show');
+                
+                // Hide the button after click
+                loveButton.style.display = 'none';
+            });
+            
+            // --- Extra Animations ---
+
+            // 1. Natural blinking for cats
+            function triggerBlink() {
+                cats.forEach(cat => {
+                    // Only blink if the cat is not currently blinking
+                    if (!cat.classList.contains('blinking')) {
+                        // Random chance to blink
+                        if (Math.random() > 0.7) {
+                            cat.classList.add('blinking');
+                            setTimeout(() => {
+                                cat.classList.remove('blinking');
+                            }, 300); // Duration of the blink animation
+                        }
+                    }
+                });
+            }
+            setInterval(triggerBlink, 2000); // Check to blink every 2 seconds
+
+            // 2. Create floating hearts
+            function createHeart() {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                
+                heart.style.left = Math.random() * 100 + 'vw'; // Random horizontal position
+                heart.style.animationDuration = Math.random() * 2 + 3 + 's'; // Random duration
+                
+                heartsContainer.appendChild(heart);
+
+                // Remove heart after it finishes animation to keep DOM clean
+                setTimeout(() => {
+                    heart.remove();
+                }, 5000); // Should match the longest animation duration
+            }
+            setInterval(createHeart, 400); // Create a new heart every 400ms
+
+        });
+    </script>
+</body>
+</html>
